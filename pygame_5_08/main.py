@@ -10,7 +10,9 @@ from enemy_generator import *
 from tower_type import *
 
 pygame.init()
-
+# load image
+background_image1 = pygame.transform.scale(pygame.image.load("images/background(1).jpg"), (WIN_WIDTH, WIN_HEIGHT))
+background_image2 = pygame.transform.scale(pygame.image.load("images/background(2).jpg"), (WIN_WIDTH, WIN_HEIGHT))
 font = pygame.font.SysFont("arialblack", 40)
 
 '''
@@ -25,6 +27,7 @@ class Game:
     def __init__(self):
         self.running = True
         self.clock = pygame.time.Clock()
+        self.bg = background_image1
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))  ##建立視窗
         pygame.display.set_caption("魚")
 
@@ -39,10 +42,8 @@ class Game:
         self.tower_max_fish= 100
         # self.all_sprites.add(self.main_tower) ##放入主塔
 
-        ##載入按鈕和畫面圖片
+        ##載入按鈕圖片
         self.starPage_img = pygame.image.load("images/startPage.jpg")
-        self.background_img = pygame.image.load("images/background.jpg")
-
         self.start_img = pygame.image.load("images/start.png").convert_alpha()
         self.quit_img = pygame.image.load("images/quit.png").convert_alpha()
         self.castnetBtn_img = pygame.image.load(tower01_img).convert_alpha()
@@ -54,6 +55,7 @@ class Game:
         ##敵人波
         self.is_next_wave = False
         self.wave = 0
+        self.stage = 0
         self.enemies = []
         self.towers = []
         self.enemy_generator = EnemyGenerator()
@@ -64,12 +66,18 @@ class Game:
 
         # 按下鍵盤中'n'按鈕後(self.is_next_wave=True)能夠產生一波敵人的動作
         # 並且敵人隨著波數的增加，會提高血量、出怪量...等
-        # 最多可以有5波的敵人
-        if self.is_next_wave == True and self.wave < 5:
+        # 最多可以有?波的敵人
+        if self.is_next_wave == True and self.wave < 7:
             self.enemy_generator.generate(self.enemies, self.wave)
             if self.enemy_generator.enemy_nums[self.wave] == 0:
                 self.wave += 1
                 self.is_next_wave = False
+
+    def check_stage_two(self):
+        if self.wave == 3:
+            self.stage = 1
+        if self.stage == 1:
+            self.bg = background_image2
 
     def create_towerPos(self):  ##建立放塔的位置
 
@@ -105,7 +113,8 @@ class Game:
         pygame.draw.rect(self.screen, RED_1, [110, 30, 10, 100], 0)
         pygame.draw.rect(self.screen, RED_2, [110, 30 + (100 - base_hp_height), 10, base_hp_height], 0)
 
-    def draw(self): ##繪畫塔和敵人
+    def draw(self, surf): ##繪畫塔和敵人
+        surf.blit(self.bg, (0, 0))
         self.draw_base_hp()
         for tow in towerposiList:
             tow.draw(self.screen)
@@ -167,7 +176,6 @@ class Game:
 
             if self.running == False:  ##開始畫面按下Quit後，running->False，後面的遊戲畫面就不顯示
                 continue
-            self.game_operation()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -176,15 +184,17 @@ class Game:
                     # 設定當按下鍵盤'n'時，可以有一波的敵人
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_n:
+                        self.check_stage_two()
                         self.is_next_wave = True
+
 
             # self.all_sprites.update()
             self.update()
-
-            self.screen.blit(self.background_img,(0,0))
+            self.game_operation()
+            self.screen.fill((255, 255, 255))
 
             # self.all_sprites.draw(self.screen)
-            self.draw()
+            self.draw(self.screen)
 
             self.main_tower.draw(self.screen)
             for tb in towerBtnList:

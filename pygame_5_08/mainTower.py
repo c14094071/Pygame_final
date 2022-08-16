@@ -8,10 +8,9 @@ class MainTower(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.fish = 100
         self.salt = 0
-        self.mainTower_img = pygame.image.load("images/mainTower.png")
-        self.image = pygame.transform.scale(self.mainTower_img,(200,200))
-
-        self.rect = self.image.get_rect(center=(100,100))
+        self.image = pygame.Surface((100,100))
+        self.image.fill(GREEN)
+        self.rect = self.image.get_rect(center=(50,50))
 
     def update(self):
         pass

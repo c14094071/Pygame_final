@@ -7,7 +7,7 @@ from settings import *
 
 
 class Enemy:
-    def __init__(self, max_hp):
+    def __init__(self):
         self.width = 60
         self.height = 60
         self.max_hp = None
