@@ -1,0 +1,1 @@
+pyinstaller main.py -p anima.py -p button.py -p enemy.py -p enemy_generator.py -p enemy_type.py -p mainTower.py -p Page.py -p settings.py -p tower_type.py -p towerPos.py -p towerView.py
